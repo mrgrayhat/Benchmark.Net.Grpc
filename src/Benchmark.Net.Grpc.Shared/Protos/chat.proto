@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Benchmark.Net.Grpc.Shared";
+
+package chat;
+
+// The greeting service definition.
+service ChatServiceGrpc {
+  rpc SendMessage (SendMessageGrpcRequest) returns (MessageContractGrpc);
+  rpc SendStreamMessage (stream SendMessageGrpcRequest) returns (MessageContractGrpc);
+
+  rpc GetMessages (google.protobuf.Empty) returns (GetMessagesGrpcResponse);
+  rpc GetStreamMessages (google.protobuf.Empty) returns (stream ChatMessageDtoGrpc);
+}
+message MessageContractGrpc{
+	bool isSuccess = 1;
+	string message = 2;
+	repeated string errors = 3;
+	PagingResultGrpc paging = 4;
+}
+message PagingResultGrpc{
+	int64 Total = 1;
+	int32 Page = 2;
+	int32 PageSize = 3;
+}
+
+message ChatMessageDtoGrpc{
+	int32 id = 1;
+	string message = 2;
+	string user = 3;
+}
+message SendMessageGrpcRequest {
+  string user = 1;
+  string message = 2;
+}
+
+message GetMessagesGrpcResponse {
+  repeated ChatMessageDtoGrpc data = 1;
+  MessageContractGrpc message = 2;
+}
